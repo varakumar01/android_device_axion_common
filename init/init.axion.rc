@@ -1,64 +1,13 @@
 on init
-    mkdir /dev/stune/ax_foreground
-    mkdir /dev/stune/audio-app
-    mkdir /dev/stune/restricted
-    mkdir /dev/stune/foreground_window
-    mkdir /dev/stune/system
-    mkdir /dev/stune/system-background
-    mkdir /dev/stune/dex2oat
-    mkdir /dev/stune/l-background
-    mkdir /dev/stune/h-background
-    mkdir /dev/stune/systemui
-    chown system system /dev/stune/ax_foreground
-    chown system system /dev/stune/audio-app
-    chown system system /dev/stune/restricted
-    chown system system /dev/stune/foreground_window
-    chown system system /dev/stune/system
-    chown system system /dev/stune/system-background
-    chown system system /dev/stune/dex2oat
-    chown system system /dev/stune/l-background
-    chown system system /dev/stune/h-background
-    chown system system /dev/stune/systemui
-    chown system system /dev/stune/ax_foreground/tasks
-    chown system system /dev/stune/audio-app/tasks
-    chown system system /dev/stune/restricted/tasks
-    chown system system /dev/stune/foreground_window/tasks
-    chown system system /dev/stune/system/tasks
-    chown system system /dev/stune/system-background/tasks
-    chown system system /dev/stune/dex2oat/tasks
-    chown system system /dev/stune/l-background/tasks
-    chown system system /dev/stune/h-background/tasks
-    chown system system /dev/stune/systemui/tasks
-    chown system system /dev/stune/ax_foreground/cgroup.procs
-    chown system system /dev/stune/audio-app/cgroup.procs
-    chown system system /dev/stune/restricted/cgroup.procs
-    chown system system /dev/stune/foreground_window/cgroup.procs
-    chown system system /dev/stune/system/cgroup.procs
-    chown system system /dev/stune/system-background/cgroup.procs
-    chown system system /dev/stune/dex2oat/cgroup.procs
-    chown system system /dev/stune/l-background/cgroup.procs
-    chown system system /dev/stune/h-background/cgroup.procs
-    chown system system /dev/stune/systemui/cgroup.procs
-    chmod 0664 /dev/stune/ax_foreground/tasks
-    chmod 0664 /dev/stune/audio-app/tasks
-    chmod 0664 /dev/stune/restricted/tasks
-    chmod 0664 /dev/stune/foreground_window/tasks
-    chmod 0664 /dev/stune/system/tasks
-    chmod 0664 /dev/stune/system-background/tasks
-    chmod 0664 /dev/stune/dex2oat/tasks
-    chmod 0664 /dev/stune/l-background/tasks
-    chmod 0664 /dev/stune/h-background/tasks
-    chmod 0664 /dev/stune/systemui/tasks
-    chmod 0664 /dev/stune/ax_foreground/cgroup.procs
-    chmod 0664 /dev/stune/audio-app/cgroup.procs
-    chmod 0664 /dev/stune/restricted/cgroup.procs
-    chmod 0664 /dev/stune/foreground_window/cgroup.procs
-    chmod 0664 /dev/stune/system/cgroup.procs
-    chmod 0664 /dev/stune/system-background/cgroup.procs
-    chmod 0664 /dev/stune/dex2oat/cgroup.procs
-    chmod 0664 /dev/stune/l-background/cgroup.procs
-    chmod 0664 /dev/stune/h-background/cgroup.procs
-    chmod 0664 /dev/stune/systemui/cgroup.procs
+    # NOTE: this kernel has no schedtune (CONFIG_SCHED_TUNE/CGROUP_SCHEDTUNE are not
+    # built; verified against arch/arm64/configs/vendor/lahaina-qgki_defconfig and
+    # confirmed by "cgroup1: Unknown subsys name 'schedtune'" at boot). /dev/stune/*
+    # can never be created on this kernel, so the entire stune setup block that used
+    # to live here has been removed rather than left to fail 10 mkdirs x 3 chown/chmod
+    # passes every boot. See PLAN.md F2. If this kernel ever gains CONFIG_SCHED_TUNE,
+    # restore the block from git history (device/axion/common@7bf9de2^{/init.axion.rc}
+    # in the upstream lineage, pre-strip) alongside re-adding the schedtune JoinCgroup
+    # actions to system/core/libprocessgroup/profiles/task_profiles.json.
 
     chmod 0755 /dev/cpuctl/cgroup.procs
     chown system system /dev/cpuctl/foreground/cpu.uclamp.min
@@ -263,9 +212,6 @@ on init
     write /dev/cpuctl/systemui/cpu.uclamp.max 100
     write /dev/cpuctl/systemui/cpu.uclamp.min 40
     write /dev/cpuctl/systemui/cpu.uclamp.latency_sensitive 1
-
-    write /dev/stune/systemui/schedtune.boost 40
-    write /dev/stune/systemui/schedtune.prefer_idle 1
 
     chown system system /dev/cpuctl/top-app
     chown system system /dev/cpuctl/top-app/tasks
